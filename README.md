@@ -12,18 +12,13 @@ Your plugin will be installed via omegga install gh:astrsk/mailbox
 # mailbox
 
 A typed safe plugin for [omegga](https://github.com/brickadia-community/omegga).
-
-This is an auto-generated README file. Please change it before publishing your plugin!
-
-Be sure to edit the script in `setup.sh` to configure your plugin on install, or
-remove it entirely if it is unnecessary.
+Based off the old plugin by [voximity](https://github.com/voximity), [omegga-mail](https://github.com/voximity/omegga-mail).
+This plugin uses a regex pattern from the old plugin, so thank you vox for that.
 
 ## Install
 
-`omegga install gh:astrsk/mailbox`
-
-_TODO: more steps...?_
+`omegga install gh:astrrsk/mailbox`
 
 ## Usage
 
-_TODO: include some usage information_
+_TODO: make a nice looking useage section  lol_
