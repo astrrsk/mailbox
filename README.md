@@ -21,4 +21,4 @@ This plugin uses a regex pattern from the old plugin, so thank you vox for that.
 
 ## Usage
 
-_TODO: make a nice looking useage section  lol_
+_TODO: make a nice looking useage section  lol, also add configs and a possible cooldown between sending letters_
