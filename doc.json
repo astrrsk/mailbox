@@ -1,0 +1,7 @@
+{
+  "name": "mailbox",
+  "description": "A typed safe Omegga plugin.",
+  "author": "astrsk",
+  "config": {},
+  "commands": []
+}
