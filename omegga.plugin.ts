@@ -92,22 +92,22 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       }
 
       for (const { index, value } of myInbox.map((value, index) => ({ index, value }))) {
-        this.omegga.whisper(speaker, `[${index}] From: ${value['from']}`);
+        this.omegga.whisper(speaker, `[${index + 1}] From: ${value['from']}`);
       }
     });
 
-    this.omegga.on('cmd:read', async (speaker: string, index: number) => {
+    this.omegga.on('cmd:inbox:read', async (speaker: string, index: number) => {
       const player = this.omegga.getPlayer(speaker);
       const inboxKey = DS_INBOX + player.id;
 
       let myInbox = await this.checkStore(inboxKey, []);
-      let letter = myInbox[index];
+      let letter = myInbox[index - 1];
 
       if (letter) {
         this.omegga.whisper(speaker, `From: ${letter['from']}...`);
         this.omegga.whisper(speaker, `${letter['message']}`);
         letter['read'] = true;
-        myInbox[index] = letter;
+        myInbox[index - 1] = letter;
         this.store.set(inboxKey, myInbox);
       } else {
         this.omegga.whisper(speaker, `Letter #${index} does not exist.`);
@@ -120,6 +120,10 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         to = nqTo;
       }
 
+      if (!message) {
+        this.omegga.whisper(speaker, 'Letter must include a message!');
+        return;
+      }
 
       let letter = this.generateMail(speaker, message);
 
@@ -164,7 +168,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
       let myInbox = await this.checkStore(inboxKey, []);
       
-      if (myInbox[index]) {
+      if (myInbox[index - 1]) {
         myInbox.splice(index, 1);
         this.store.set(inboxKey, myInbox);
         this.omegga.whisper(speaker, `Deleted letter #${index} from your inbox.`);

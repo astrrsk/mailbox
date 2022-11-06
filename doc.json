@@ -1,7 +1,72 @@
 {
   "name": "mailbox",
-  "description": "A typed safe Omegga plugin.",
+  "description": "Allows for sending messages to other users, even if offline",
   "author": "astrsk",
   "config": {},
-  "commands": []
+  "commands": [
+    {
+      "name": "inbox",
+      "description": "checks your inbox",
+      "example": "/inbox",
+      "args": []
+    },
+    {
+      "name": "inbox:read",
+      "description": "reads a letter in your inbox",
+      "example": "/inbox:read 0",
+      "args": [
+        {
+          "name": "letter number",
+          "description": "number of the letter to read",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "inbox:remove",
+      "description": "removes a letter from your inbox",
+      "example": "/inbox:remove 0 YES",
+      "args": [
+        {
+          "name": "letter number",
+          "description": "number of the letter to remove",
+          "required": true
+        },
+        {
+          "name": "confirmation",
+          "description": "confirms the removal of letter",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "inbox:clear",
+      "description": "clears your entire inbox",
+      "example": "/inbox:clear YES",
+      "args": [
+        {
+          "name": "confirmation",
+          "description": "confirms the clearing of your inbox",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "send",
+      "description": "sends a letter to a player. Put names with spaces in quotes",
+      "example": "/send \"John Doe\" Hello, world!",
+      "args": [
+        {
+          "name": "name",
+          "description": "name of player to send the letter to",
+          "required": true
+        },
+        {
+          "name": "message",
+          "description": "message contained in the letter",
+          "required": true
+        }
+      ]
+    }
+]
 }
