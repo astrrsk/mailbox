@@ -145,6 +145,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
             const v = await this.store.get(k);
             if (v.toLowerCase() == to.toLowerCase()) { // Match found
               toKey = k.match(/(?<=mailbox_lastStoredName_).*/);
+              break;
             }
           }
         }
