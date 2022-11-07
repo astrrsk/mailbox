@@ -27,21 +27,17 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     return data;
   }
 
-  private getPlayer(name: string): string | null { // I'm not doing the alias system, fuck you (will add if its rly needed but i'd prefer people use full names)
+  private getPlayer(name: string): string | null { 
     name = name.toLowerCase();
 
-    const players = this.omegga.getPlayers();
-
-    for (const p of players) {
-      if (p.name.toLowerCase() == name) { return p.name; }
-    }
-    return null; // Offline, do something else
+    const plr = this.omegga.findPlayerByName(name);
+    return plr ? plr.name : null; // Offline, do something else
   }
 
   private generateMail(sender: string, message: string) {
     const mail = {
       from: sender,
-      unread: true,
+      read: false,
       message: message
     }
 
@@ -72,7 +68,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       let unreadCount = 0;
 
       for (const mail of inboxStore) {
-        if (mail['unread'] == true) { unreadCount++; }
+        if (mail['read'] == false) { unreadCount++; }
       }
 
       if (unreadCount > 0) {
@@ -92,7 +88,11 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       }
 
       for (const { index, value } of myInbox.map((value, index) => ({ index, value }))) {
-        this.omegga.whisper(speaker, `[${index + 1}] From: ${value['from']}`);
+        let indexFormat = '<color="92ba1a">'
+        if (value['read'] == false) { indexFormat = '<color="ba1a1a">'; }
+        indexFormat += `${index + 1}</>`;
+
+        this.omegga.whisper(speaker, `[${indexFormat}] From: ${value['from']}`);
       }
     });
 
@@ -104,7 +104,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       let letter = myInbox[index - 1];
 
       if (letter) {
-        this.omegga.whisper(speaker, `From: ${letter['from']}...`);
+        this.omegga.whisper(speaker, `<b><i>From <color="ffff00">${letter['from']}</>:</b></i>`);
         this.omegga.whisper(speaker, `${letter['message']}`);
         letter['read'] = true;
         myInbox[index - 1] = letter;
@@ -136,7 +136,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         currentInbox.push(letter);
         this.store.set(toInboxKey, currentInbox);
 
-        this.omegga.whisper(onlinePlayer, `You got mail!!!!! :0`);
+        this.omegga.whisper(onlinePlayer, `<b><color="ffff00">!</> You got a letter!</b>`);
       } else { // Player is offline, search store for username
         let toKey = null;
         const keys = await this.store.keys();
@@ -162,14 +162,14 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       const player = this.omegga.getPlayer(speaker);
       const inboxKey = DS_INBOX + player.id;
       if (!confirmation || confirmation != 'YES') {
-        this.omegga.whisper(speaker, 'Please confirm this action by typing <code>/remove # YES</>');
+        this.omegga.whisper(speaker, 'Please confirm this action by typing <code>/inbox:remove # YES</>');
         return;
       }
 
       let myInbox = await this.checkStore(inboxKey, []);
       
       if (myInbox[index - 1]) {
-        myInbox.splice(index, 1);
+        myInbox.splice(index - 1, 1);
         this.store.set(inboxKey, myInbox);
         this.omegga.whisper(speaker, `Deleted letter #${index} from your inbox.`);
       } else {
@@ -181,7 +181,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       const player = this.omegga.getPlayer(speaker);
       const inboxKey = DS_INBOX + player.id;
       if (!confirmation || confirmation != 'YES') {
-        this.omegga.whisper(speaker, 'Please confirm this action by typing <code>/cleaninbox YES</>');
+        this.omegga.whisper(speaker, 'Please confirm this action by typing <code>/inbox:clear YES</>');
       } else if (confirmation == 'YES') {
         this.omegga.whisper(speaker, 'Cleared your inbox.');
         this.store.set(inboxKey, []); 
@@ -191,7 +191,5 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     return { registeredCommands: ['inbox', 'inbox:read', 'inbox:remove', 'inbox:clear', 'send'] };
   }
 
-  async stop() {
-    // Anything that needs to be cleaned up...
-  }
+  async stop() {}
 }
