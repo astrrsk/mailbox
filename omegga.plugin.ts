@@ -138,15 +138,18 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         currentInbox.push(letter);
         this.store.set(toInboxKey, currentInbox);
 
+        this.omegga.whisper(speaker, `Letter successfully sent to ${toPlayer.name}`);
         this.omegga.whisper(onlinePlayer, `<b><color="ffff00">!</> You got a letter!</b>`);
       } else { // Player is offline, search store for username
         let toKey = null;
+        let toName = null;
         const keys = await this.store.keys();
         for (const k of keys) {
           if (k.match(DS_LASTNAME)) { // Is a lastname key, get value to inspect
             const v = await this.store.get(k);
             if (v.toLowerCase() == to.toLowerCase()) { // Match found
               toKey = k.match(/(?<=mailbox_lastStoredName_).*/);
+              toName = v;
               break;
             }
           }
@@ -158,6 +161,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         let currentInbox = await this.checkStore(DS_INBOX + toKey, []);
         currentInbox.push(letter);
         this.store.set(DS_INBOX + toKey, currentInbox);
+        this.omegga.whisper(speaker, `Letter successfully sent to ${toName}!`)
       }
     });
 
