@@ -72,7 +72,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       }
 
       if (unreadCount > 0) {
-        this.omegga.whisper(player.name, `You have ${unreadCount} unread letter${unreadCount > 1 ? 's' : ''}.`);
+        this.omegga.whisper(player.name, `You have ${unreadCount} unread letter${unreadCount > 1 ? 's' : ''}. Type <code>/inbox</> to check.`);
       }
     });
 
@@ -86,6 +86,8 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         this.omegga.whisper(speaker, 'Your inbox is empty.');
         return;
       }
+
+      this.omegga.whisper(speaker, 'Type <code>/inbox:read #</> to read a letter. A <color="ba1a1a">red</> number means the letter is unread.')
 
       for (const { index, value } of myInbox.map((value, index) => ({ index, value }))) {
         let indexFormat = '<color="92ba1a">'
