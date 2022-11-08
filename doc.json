@@ -54,7 +54,7 @@
     {
       "name": "send",
       "description": "sends a letter to a player. Put names with spaces in quotes",
-      "example": "/send \"John Doe\" Hello, world!",
+      "example": "/send 'John Doe' Hello, world!",
       "args": [
         {
           "name": "name",
